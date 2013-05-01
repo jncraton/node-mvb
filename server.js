@@ -56,12 +56,12 @@ function genPage(parent, id) {
     if (!id) {
         var children = '';
 
-        Object.keys(page).forEach(function (key) {
-            if (!isNaN(key)) {
-                var id = key;
+        Object.keys(page).forEach(function (id) {
+            if (!isNaN(id)) {
                 var slug = page[id].slug;
+                var title = page[id].title
 
-                children += '<a href="/' + parent + '/' + id + '/' + slug + '">' + slug + '</a>'
+                children += '<a href="/' + parent + '/' + id + '/' + slug + '">' + title + '</a>'
             }
         });
     }
