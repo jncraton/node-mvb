@@ -11,7 +11,10 @@ var template = fs.readFileSync('template.html', 'utf-8');
 var pages = {};
 
 fs.readdirSync(root).forEach(function (parent) {
-    pages[parent] = {};
+    pages[parent] = {
+        slug: parent,
+        content: fs.readFileSync(root + parent + '/content.md', 'utf-8')
+    };
 
     fs.readdirSync(root + parent).forEach(function (child) {
         var parts = child.match(/(\d+)\-(.*)/);
@@ -32,44 +35,56 @@ fs.readdirSync(root).forEach(function (parent) {
 });
 
 function getPageDir(parent, id) {
-    return root + parent + '/' + id + '-' + pages[parent][id].slug;
+    if (id) {
+        return root + parent + '/' + id + '-' + pages[parent][id].slug;
+    } else {
+        return root + parent;
+    }
 }
 
-function genPage(pageDir) {
-    var content = md(fs.readFileSync(pageDir + '/content.md', 'utf-8'));
+function genPage(parent, id) {
+    var page;
 
-    var page = template.replace('{{ content }}', content);
+    if (id) {
+        page = pages[parent][id]
+    } else {
+        page = pages[parent];
+    }
 
-    var children = '';
+    var html = template.replace('{{ content }}', page.content);
 
-    fs.readdirSync(pageDir).forEach(function(child) {
-        if (child.match(/(\d+)\-(.*)/)) {
-            var id = child.match(/(\d+)\-(.*)/)[1];
-            var slug = child.match(/(\d+)\-(.*)/)[2];
+    if (!id) {
+        var children = '';
 
-            children += '<a href="/blog/' + id + '/' + slug + '">' + slug + '</a>'
-        }
-    });
+        fs.readdirSync(getPageDir(parent)).forEach(function(child) {
+            if (child.match(/(\d+)\-(.*)/)) {
+                var id = child.match(/(\d+)\-(.*)/)[1];
+                var slug = child.match(/(\d+)\-(.*)/)[2];
 
-    page = page.replace('{{ children }}', children);
+                children += '<a href="/blog/' + id + '/' + slug + '">' + slug + '</a>'
+            }
+        });
 
-    return page;
+        html = html.replace('{{ children }}', children);
+    }
+
+    return html;
 }
 
 app.get('/', function(req, res){
-    res.send(genPage(root + 'index'));
+    res.send(genPage('index'));
 });
 
-app.get('/:slug', function(req, res){
-    res.send(genPage(root + req.params.slug));
+app.get('/:parent', function(req, res){
+    res.send(genPage(req.params.parent));
 });
 
 app.get('/:parent/:id', function(req, res){
-    res.send(genPage(getPageDir(req.params.parent, req.params.id)));
+    res.send(genPage(req.params.parent, req.params.id));
 });
 
 app.get('/:parent/:id/:slug', function(req, res){
-    res.send(genPage(getPageDir(req.params.parent, req.params.id)));
+    res.send(genPage(req.params.parent, req.params.id));
 });
 
 app.listen(3000);
