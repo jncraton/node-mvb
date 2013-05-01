@@ -51,7 +51,7 @@ function genPage(parent, id) {
         page = pages[parent];
     }
 
-    var html = template.replace('{{ content }}', page.content);
+    var html = template.replace('{{ content }}', md(page.content));
 
     if (!id) {
         var children = '';
