@@ -3,7 +3,7 @@ var fs = require('fs');
 var express = require('express');
 var md = require("node-markdown").Markdown;
 
-var app = express.createServer();
+var app = express();
 
 var root = 'pages/';
 var template = fs.readFileSync('template.html', 'utf-8');
@@ -35,6 +35,10 @@ function genPage(pageDir) {
     var content = md(fs.readFileSync(pageDir + '/content.md', 'utf-8'));
 
     var page = template.replace('{{ content }}', content);
+
+    fs.readdirSync(pageDir, function (child) {
+        console.log(child);
+    });
 
     return page;
 }
