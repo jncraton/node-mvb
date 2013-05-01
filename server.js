@@ -56,16 +56,12 @@ function genPage(parent, id) {
     if (!id) {
         var children = '';
 
-        Object.keys(page).forEach(function (key)) {
-            console.log(key);
-        }
+        Object.keys(page).forEach(function (key) {
+            if (!isNaN(key)) {
+                var id = key;
+                var slug = page[id].slug;
 
-        fs.readdirSync(getPageDir(parent)).forEach(function(child) {
-            if (child.match(/(\d+)\-(.*)/)) {
-                var id = child.match(/(\d+)\-(.*)/)[1];
-                var slug = child.match(/(\d+)\-(.*)/)[2];
-
-                children += '<a href="/blog/' + id + '/' + slug + '">' + slug + '</a>'
+                children += '<a href="/' + parent + '/' + id + '/' + slug + '">' + slug + '</a>'
             }
         });
 
