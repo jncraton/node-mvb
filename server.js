@@ -10,6 +10,14 @@ var template = fs.readFileSync('template.html', 'utf-8');
 
 var pages = {};
 
+function getPageDir(parent, id) {
+    if (id) {
+        return root + parent + '/' + id + '-' + pages[parent][id].slug;
+    } else {
+        return root + parent;
+    }
+}
+
 fs.readdirSync(root).forEach(function (parent) {
     pages[parent] = {
         slug: parent,
@@ -33,14 +41,6 @@ fs.readdirSync(root).forEach(function (parent) {
         }
     });
 });
-
-function getPageDir(parent, id) {
-    if (id) {
-        return root + parent + '/' + id + '-' + pages[parent][id].slug;
-    } else {
-        return root + parent;
-    }
-}
 
 function genPage(parent, id) {
     var page;
