@@ -56,6 +56,10 @@ function genPage(parent, id) {
     if (!id) {
         var children = '';
 
+        Object.keys(page).forEach(function (key)) {
+            console.log(key);
+        }
+
         fs.readdirSync(getPageDir(parent)).forEach(function(child) {
             if (child.match(/(\d+)\-(.*)/)) {
                 var id = child.match(/(\d+)\-(.*)/)[1];
