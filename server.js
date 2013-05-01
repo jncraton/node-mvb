@@ -23,6 +23,10 @@ fs.readdirSync(root).forEach(function (parent) {
                 id: id,
                 slug: parts[2]
             };
+
+            pages[parent][id].content = fs.readFileSync(getPageDir(parent, id) + '/content.md', 'utf-8');
+
+            pages[parent][id].title = pages[parent][id].content.match(/# (.*?)\n/)[1];
         }
     });
 });
