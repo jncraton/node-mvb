@@ -36,9 +36,18 @@ function genPage(pageDir) {
 
     var page = template.replace('{{ content }}', content);
 
-    fs.readdirSync(pageDir, function (child) {
-        console.log(child);
+    var children = '';
+
+    fs.readdirSync(pageDir).forEach(function(child) {
+        if (child.match(/(\d+)\-(.*)/)) {
+            var id = child.match(/(\d+)\-(.*)/)[1];
+            var slug = child.match(/(\d+)\-(.*)/)[2];
+
+            children += '<a href="/blog/' + id + '/' + slug + '">' + slug + '</a>'
+        }
     });
+
+    page = page.replace('{{ children }}', children);
 
     return page;
 }
