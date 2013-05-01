@@ -64,9 +64,9 @@ function genPage(parent, id) {
                 children += '<a href="/' + parent + '/' + id + '/' + slug + '">' + slug + '</a>'
             }
         });
-
-        html = html.replace('{{ children }}', children);
     }
+
+    html = html.replace('{{ children }}', children);
 
     return html;
 }
