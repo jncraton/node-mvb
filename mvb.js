@@ -72,11 +72,13 @@ function genPage(parent, id) {
                 var slug = page[id].slug;
                 var title = page[id].title
 
-                children += '<a href="/' + parent + '/' + id + '/' + slug + '">' + title + '</a>'
+                children += '<a href="/' + parent + '/' + id + '/' + slug + '">' + title + '</a><br />'
             }
         });
 
         html = html.replace('{{ children }}', children);
+    } else {
+        html = html.replace('{{ children }}', '');
     }
 
     return html;
