@@ -19,36 +19,47 @@ function getPageDir(parent, id) {
 }
 
 fs.readdirSync(root).forEach(function (parent) {
-    pages[parent] = {
-        slug: parent,
-        content: fs.readFileSync(root + parent + '/content.md', 'utf-8')
-    };
-
-    fs.readdirSync(root + parent).forEach(function (child) {
-        var parts = child.match(/(\d+)\-(.*)/);
-
-        if (parts) {
-            var id = parts[1];
-
-            pages[parent][id] = {
-                id: id,
-                slug: parts[2]
-            };
-
-            pages[parent][id].content = fs.readFileSync(getPageDir(parent, id) + '/content.md', 'utf-8');
-
-            pages[parent][id].title = pages[parent][id].content.match(/# (.*?)\n/)[1];
+    if (parent == 'content.md') {
+        pages['root'] = {
+            slug: '',
+            content: fs.readFileSync(root + parent, 'utf-8')
         }
-    });
+    } else {
+        pages[parent] = {
+            slug: parent,
+            content: fs.readFileSync(root + parent + '/content.md', 'utf-8')
+        };
+
+        fs.readdirSync(root + parent).forEach(function (child) {
+            var parts = child.match(/(\d+)\-(.*)/);
+
+            if (parts) {
+                var id = parts[1];
+
+                pages[parent][id] = {
+                    id: id,
+                    slug: parts[2]
+                };
+
+                pages[parent][id].content = fs.readFileSync(getPageDir(parent, id) + '/content.md', 'utf-8');
+
+                pages[parent][id].title = pages[parent][id].content.match(/# (.*?)\n/)[1];
+            }
+        });
+    }
 });
 
 function genPage(parent, id) {
     var page;
 
-    if (id) {
-        page = pages[parent][id]
+    if (parent) {
+        if (id) {
+            page = pages[parent][id]
+        } else {
+            page = pages[parent];
+        }
     } else {
-        page = pages[parent];
+        page = pages['root'];
     }
 
     var html = template.replace('{{ content }}', md(page.content));
@@ -64,15 +75,15 @@ function genPage(parent, id) {
                 children += '<a href="/' + parent + '/' + id + '/' + slug + '">' + title + '</a>'
             }
         });
-    }
 
-    html = html.replace('{{ children }}', children);
+        html = html.replace('{{ children }}', children);
+    }
 
     return html;
 }
 
 app.get('/', function(req, res){
-    res.send(genPage('index'));
+    res.send(genPage());
 });
 
 app.get('/:parent', function(req, res){
