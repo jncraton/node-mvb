@@ -91,11 +91,15 @@ app.get('/:parent', function(req, res){
 });
 
 app.get('/:parent/:id', function(req, res){
-    res.redirect('/' + req.params.parent + '/' + req.params.id + '/' + pages[req.params.parent][req.params.id].slug);
+    res.redirect(301, '/' + req.params.parent + '/' + req.params.id + '/' + pages[req.params.parent][req.params.id].slug + '/');
+});
+
+app.get('/:parent/:id/:slug/', function(req, res){
+    res.send(genPage(req.params.parent, req.params.id));
 });
 
 app.get('/:parent/:id/:slug', function(req, res){
-    res.send(genPage(req.params.parent, req.params.id));
+    res.redirect(301, '/' + req.params.parent + '/' + req.params.id + '/' + pages[req.params.parent][req.params.id].slug + '/');
 });
 
 app.listen(3000);
