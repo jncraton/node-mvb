@@ -98,6 +98,11 @@ app.get('/:parent/:id/:slug/', function(req, res){
     res.send(genPage(req.params.parent, req.params.id));
 });
 
+app.get('/:parent/:id/:slug/:file', function(req, res){
+    //console.log('FILE: ' + root + req.params.parent + '/' + req.params.id + '/' + pages[req.params.parent][req.params.id].slug + '/' + file)
+    res.sendfile(root + req.params.parent + '/' + req.params.id + '-' + pages[req.params.parent][req.params.id].slug + '/' + req.params.file);
+});
+
 app.get('/:parent/:id/:slug', function(req, res){
     res.redirect(301, '/' + req.params.parent + '/' + req.params.id + '/' + pages[req.params.parent][req.params.id].slug + '/');
 });
