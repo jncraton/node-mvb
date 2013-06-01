@@ -19,7 +19,7 @@ function getPageDir(parent, id) {
 }
 
 fs.readdirSync(root).forEach(function (parent) {
-    if (parent == 'content.md') {
+    if (parent == 'index.md') {
         pages['root'] = {
             slug: '',
             content: fs.readFileSync(root + parent, 'utf-8')
@@ -27,7 +27,7 @@ fs.readdirSync(root).forEach(function (parent) {
     } else {
         pages[parent] = {
             slug: parent,
-            content: fs.readFileSync(root + parent + '/content.md', 'utf-8')
+            content: fs.readFileSync(root + parent + '/index.md', 'utf-8')
         };
 
         fs.readdirSync(root + parent).forEach(function (child) {
@@ -41,7 +41,7 @@ fs.readdirSync(root).forEach(function (parent) {
                     slug: parts[2]
                 };
 
-                pages[parent][id].content = fs.readFileSync(getPageDir(parent, id) + '/content.md', 'utf-8');
+                pages[parent][id].content = fs.readFileSync(getPageDir(parent, id) + '/index.md', 'utf-8');
 
                 pages[parent][id].title = pages[parent][id].content.match(/# (.*?)\n/)[1];
             }
