@@ -104,7 +104,6 @@ app.get('/:parent/:id/:slug/', function(req, res){
 });
 
 app.get('/:parent/:id/:slug/:file', function(req, res){
-    //console.log('FILE: ' + root + req.params.parent + '/' + req.params.id + '/' + pages[req.params.parent][req.params.id].slug + '/' + file)
     res.sendfile(root + req.params.parent + '/' + req.params.id + '-' + pages[req.params.parent][req.params.id].slug + '/' + req.params.file);
 });
 
