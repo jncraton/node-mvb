@@ -7,6 +7,9 @@ var app = express();
 
 var root = 'pages/';
 var template = fs.readFileSync('template.html', 'utf-8');
+var style = fs.readFileSync('style.css', 'utf-8');
+
+template = template.replace('{{ style }}', style)
 
 var pages = {};
 
