@@ -12,7 +12,6 @@ var template = fs.readFileSync('template.html', 'utf-8');
 var style = fs.readFileSync('style.css', 'utf-8');
 
 template = template.replace('{{ style }}', style)
-template = template.replace('{{ title }}', conf.title)
 
 var pages = {};
 
@@ -69,6 +68,8 @@ function genPage(parent, id) {
     }
 
     var html = template.replace('{{ content }}', md(page.content));
+    
+    html = html.replace('{{ title }}', page.title || conf.title);
 
     if (!id) {
         var children = '';
