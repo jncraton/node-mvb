@@ -1,4 +1,5 @@
 {
     "port": 3000,
-    "title": "MVB"
+    "title": "MVB",
+    "baseUrl": "http://example.com"
 }

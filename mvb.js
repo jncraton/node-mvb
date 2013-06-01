@@ -27,11 +27,13 @@ fs.readdirSync(root).forEach(function (parent) {
     if (parent == 'index.md') {
         pages['root'] = {
             slug: '',
+            canonicalUrl: '/',
             content: fs.readFileSync(root + parent, 'utf-8')
         }
     } else {
         pages[parent] = {
             slug: parent,
+            canonicalUrl: '/' + parent,
             content: fs.readFileSync(root + parent + '/index.md', 'utf-8')
         };
 
@@ -43,6 +45,7 @@ fs.readdirSync(root).forEach(function (parent) {
 
                 pages[parent][id] = {
                     id: id,
+                    canonicalUrl: '/' + parent + '/' + id,
                     slug: parts[2]
                 };
 
@@ -70,6 +73,7 @@ function genPage(parent, id) {
     var html = template.replace('{{ content }}', md(page.content));
     
     html = html.replace('{{ title }}', page.title || conf.title);
+    html = html.replace('{{ canonicalUrl }}', conf.baseUrl + page.canonicalUrl);
 
     if (!id) {
         var children = '';
