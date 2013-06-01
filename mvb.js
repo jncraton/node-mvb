@@ -1,7 +1,9 @@
 var fs = require('fs');
 
 var express = require('express');
-var md = require("node-markdown").Markdown;
+var md = require('node-markdown').Markdown;
+
+var conf = require('./conf.json');
 
 var app = express();
 
@@ -111,5 +113,5 @@ app.get('/:parent/:id/:slug', function(req, res){
     res.redirect(301, '/' + req.params.parent + '/' + req.params.id + '/' + pages[req.params.parent][req.params.id].slug + '/');
 });
 
-app.listen(3000);
-console.log('Server running at http://127.0.0.1:3000/');
+app.listen(conf.port);
+console.log('Server running at http://127.0.0.1:' + conf.port);
