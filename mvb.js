@@ -106,11 +106,10 @@ function genPage(res, parent, id, slug) {
         var childrenHtml = '';
         
         for (var i = 0; i < children.length; i++) {
-            var id = children[i].id;
-            var slug = children[i].slug;
-            var title = children[i].title
-
-            childrenHtml += '<a href="/' + parent + '/' + id + '/' + slug + '">' + title + '</a><br />'
+            childrenHtml += '<a href="/' + parent + '/' + 
+                children[i].id + '/' + 
+                children[i].slug + '">' + 
+                children[i].title + '</a><br />'
         }
 
 
