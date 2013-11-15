@@ -13,6 +13,9 @@
     <div>
         {{ content }}
         {{ children }}
+        {% if nochildren %}
+            This page has no children
+        {% endif %}
     </div>
 </body>
 </html>

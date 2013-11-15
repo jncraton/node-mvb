@@ -89,7 +89,7 @@ function genPage(res, parent, id, slug) {
     
     html = html.replace('{{ title }}', page.title || conf.title);
     html = html.replace(/{{ canonicalUrl }}/g, conf.baseUrl + page.canonicalUrl);
-
+    
     if (!id) {
         var children = [];
 
@@ -117,6 +117,11 @@ function genPage(res, parent, id, slug) {
     } else {
         html = html.replace('{{ children }}', '');
     }
+    
+    if (children) {
+        html = html.replace(/{% if nochildren %}[\s\S]*?{% endif %}/mg, '');
+    }
+    html = html.replace(/{% .*? %}/mg, '');
     
     res.send(status, html);
 
