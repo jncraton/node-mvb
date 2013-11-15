@@ -57,8 +57,10 @@ fs.readdirSync(root).forEach(function (parent) {
     }
 });
 
-function genPage(parent, id) {
+function genPage(res, parent, id) {
     var page;
+    var status = 200;
+    
 
     if (parent) {
         if (id) {
@@ -68,6 +70,14 @@ function genPage(parent, id) {
         }
     } else {
         page = pages['root'];
+    }
+    
+    if (!page) {
+        page = {
+            content: 'Not Found',
+            title: 'Not Found'
+        };
+        status = 404;
     }
 
     var html = template.replace('{{ content }}', md(page.content));
@@ -91,16 +101,18 @@ function genPage(parent, id) {
     } else {
         html = html.replace('{{ children }}', '');
     }
+    
+    res.send(status, html);
 
     return html;
 }
 
 app.get('/', function(req, res){
-    res.send(genPage());
+    genPage(res);
 });
 
 app.get('/:parent', function(req, res){
-    res.send(genPage(req.params.parent));
+    genPage(res, req.params.parent);
 });
 
 app.get('/:parent/:id', function(req, res){
@@ -108,7 +120,7 @@ app.get('/:parent/:id', function(req, res){
 });
 
 app.get('/:parent/:id/:slug/', function(req, res){
-    res.send(genPage(req.params.parent, req.params.id));
+    genPage(res, req.params.parent, req.params.id);
 });
 
 app.get('/:parent/:id/:slug/:file', function(req, res){
