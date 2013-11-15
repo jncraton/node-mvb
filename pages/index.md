@@ -1,1 +1,0 @@
-Welcome to MVB. Things seem to be working.
