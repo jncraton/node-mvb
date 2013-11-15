@@ -93,8 +93,6 @@ function genPage(res, parent, id, slug) {
     if (!id) {
         var children = [];
 
-        console.log(Object.keys(page))
-        
         Object.keys(page).forEach(function (id) {
             if (!isNaN(id)) {
                 children.push(page[id])
