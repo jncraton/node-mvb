@@ -91,18 +91,32 @@ function genPage(res, parent, id, slug) {
     html = html.replace(/{{ canonicalUrl }}/g, conf.baseUrl + page.canonicalUrl);
 
     if (!id) {
-        var children = '';
+        var children = [];
 
+        console.log(Object.keys(page))
+        
         Object.keys(page).forEach(function (id) {
             if (!isNaN(id)) {
-                var slug = page[id].slug;
-                var title = page[id].title
-
-                children += '<a href="/' + parent + '/' + id + '/' + slug + '">' + title + '</a><br />'
+                children.push(page[id])
             }
         });
+        
+        children.sort(function (a, b) {
+            return a.id < b.id;
+        });
+        
+        var childrenHtml = '';
+        
+        for (var i = 0; i < children.length; i++) {
+            var id = children[i].id;
+            var slug = children[i].slug;
+            var title = children[i].title
 
-        html = html.replace('{{ children }}', children);
+            childrenHtml += '<a href="/' + parent + '/' + id + '/' + slug + '">' + title + '</a><br />'
+        }
+
+
+        html = html.replace('{{ children }}', childrenHtml);
     } else {
         html = html.replace('{{ children }}', '');
     }
