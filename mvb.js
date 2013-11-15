@@ -86,7 +86,7 @@ function genPage(res, parent, id, slug) {
     var html = template.replace('{{ content }}', md(page.content));
     
     html = html.replace('{{ title }}', page.title || conf.title);
-    html = html.replace('{{ canonicalUrl }}', conf.baseUrl + page.canonicalUrl);
+    html = html.replace(/{{ canonicalUrl }}/g, conf.baseUrl + page.canonicalUrl);
 
     if (!id) {
         var children = '';
