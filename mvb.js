@@ -100,7 +100,7 @@ function genPage(res, parent, id, slug) {
         });
         
         children.sort(function (a, b) {
-            return a.id < b.id;
+            return b.id - a.id;
         });
         
         var childrenHtml = '';
