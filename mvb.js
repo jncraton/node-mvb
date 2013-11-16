@@ -52,8 +52,6 @@ function loadPages() {
                         slug: parts[2]
                     });
 
-                    pages[parent][id].content = fs.readFileSync(pages[parent][id].localPath + '/content.md', 'utf-8');
-
                     pages[parent][id].title = pages[parent][id].content.match(/# (.*?)\n/)[1];
                 }
             });
