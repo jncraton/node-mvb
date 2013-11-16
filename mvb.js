@@ -26,7 +26,43 @@ function buildPageContent(page) {
         page.title = conf.title;
     }
     
-    page.content = md(page.content);
+    page.content = template.replace('{{ content }}', md(page.content));
+    
+    page.content = page.content.replace('{{ title }}', page.title);
+
+    page.content = page.content.replace(/{{ canonicalUrl }}/g, conf.baseUrl + page.canonicalUrl);
+    
+    if (!page.id) {
+        console.log(page)
+        var children = [];
+
+        Object.keys(page).forEach(function (id) {
+            if (!isNaN(id)) {
+                children.push(page[id])
+            }
+        });
+        
+        children.sort(function (a, b) {
+            return b.id - a.id;
+        });
+        
+        var childrenHtml = '';
+        
+        for (var i = 0; i < children.length; i++) {
+            childrenHtml += '<a href="' + children[i].canonicalUrl + '">' + 
+                children[i].title + '</a><br />'
+        }
+
+
+        page.content = page.content.replace('{{ children }}', childrenHtml);
+    } else {
+        page.content = page.content.replace('{{ children }}', '');
+    }
+    
+    if (children) {
+        page.content = page.content.replace(/{% if nochildren %}[\s\S]*?{% endif %}/mg, '');
+    }
+    page.content = page.content.replace(/{% .*? %}/mg, '');
 
     return page;
 }
@@ -61,6 +97,8 @@ function loadPages() {
                     });
                 }
             });
+            
+            pages[parent] = buildPageContent(pages[parent]);
         }
     });
 }
@@ -93,47 +131,7 @@ function genPage(res, parent, id, slug) {
         status = 404;
     }
 
-    var html = template.replace('{{ content }}', page.content);
-    
-    html = html.replace('{{ title }}', page.title || conf.title);
-    html = html.replace(/{{ canonicalUrl }}/g, conf.baseUrl + page.canonicalUrl);
-    
-    if (!id) {
-        var children = [];
-
-        Object.keys(page).forEach(function (id) {
-            if (!isNaN(id)) {
-                children.push(page[id])
-            }
-        });
-        
-        children.sort(function (a, b) {
-            return b.id - a.id;
-        });
-        
-        var childrenHtml = '';
-        
-        for (var i = 0; i < children.length; i++) {
-            childrenHtml += '<a href="/' + parent + '/' + 
-                children[i].id + '/' + 
-                children[i].slug + '">' + 
-                children[i].title + '</a><br />'
-        }
-
-
-        html = html.replace('{{ children }}', childrenHtml);
-    } else {
-        html = html.replace('{{ children }}', '');
-    }
-    
-    if (children) {
-        html = html.replace(/{% if nochildren %}[\s\S]*?{% endif %}/mg, '');
-    }
-    html = html.replace(/{% .*? %}/mg, '');
-    
-    res.send(status, html);
-
-    return html;
+    res.send(status, page.content);
 }
 
 app.get('/', function(req, res){
