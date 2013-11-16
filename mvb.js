@@ -112,7 +112,7 @@ function genPage(res, parent, id, slug) {
         if (id) {
             page = pages[parent][id]
             if (page.slug != slug) {
-                res.redirect(301, '/' + parent + '/' + id + '/' + page.slug + '/');                
+                res.redirect(301, page.canonicalUrl);                
                 return;
             }
         } else {
