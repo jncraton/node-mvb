@@ -29,6 +29,14 @@ function minifyCSS (css) {
     return css;
 }
 
+function minifyHTML (html) {
+    html = html.replace(/\n +/g, '\n')
+    html = html.replace(/\n\n+/g, '\n')
+    html = html.replace(/>\n+/g, '>')
+    
+    return html;
+}
+
 function buildPageContent(page) {
     page.content = fs.readFileSync(page.localPath + '/content.md', 'utf-8')
     
@@ -74,6 +82,8 @@ function buildPageContent(page) {
         page.content = page.content.replace(/{% if nochildren %}[\s\S]*?{% endif %}/mg, '');
     }
     page.content = page.content.replace(/{% .*? %}/mg, '');
+    
+    page.content = minifyHTML(page.content);
 
     return page;
 }
