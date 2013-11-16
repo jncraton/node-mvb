@@ -25,39 +25,43 @@ function getPageDir(parent, id) {
     }
 }
 
-fs.readdirSync(root).forEach(function (parent) {
-    if (parent == 'content.md') {
-        pages['root'] = {
-            slug: '',
-            canonicalUrl: '/',
-            content: fs.readFileSync(root + parent, 'utf-8')
-        }
-    } else if (parent.indexOf('.') == -1) {
-        pages[parent] = {
-            slug: parent,
-            canonicalUrl: '/' + parent,
-            content: fs.readFileSync(root + parent + '/content.md', 'utf-8')
-        };
-
-        fs.readdirSync(root + parent).forEach(function (child) {
-            var parts = child.match(/(\d+)\-(.*)/);
-
-            if (parts) {
-                var id = parts[1];
-
-                pages[parent][id] = {
-                    id: id,
-                    canonicalUrl: '/' + parent + '/' + id,
-                    slug: parts[2]
-                };
-
-                pages[parent][id].content = fs.readFileSync(getPageDir(parent, id) + '/content.md', 'utf-8');
-
-                pages[parent][id].title = pages[parent][id].content.match(/# (.*?)\n/)[1];
+function loadPages() {
+    fs.readdirSync(root).forEach(function (parent) {
+        if (parent == 'content.md') {
+            pages['root'] = {
+                slug: '',
+                canonicalUrl: '/',
+                content: fs.readFileSync(root + parent, 'utf-8')
             }
-        });
-    }
-});
+        } else if (parent.indexOf('.') == -1) {
+            pages[parent] = {
+                slug: parent,
+                canonicalUrl: '/' + parent,
+                content: fs.readFileSync(root + parent + '/content.md', 'utf-8')
+            };
+
+            fs.readdirSync(root + parent).forEach(function (child) {
+                var parts = child.match(/(\d+)\-(.*)/);
+
+                if (parts) {
+                    var id = parts[1];
+
+                    pages[parent][id] = {
+                        id: id,
+                        canonicalUrl: '/' + parent + '/' + id,
+                        slug: parts[2]
+                    };
+
+                    pages[parent][id].content = fs.readFileSync(getPageDir(parent, id) + '/content.md', 'utf-8');
+
+                    pages[parent][id].title = pages[parent][id].content.match(/# (.*?)\n/)[1];
+                }
+            });
+        }
+    });
+}
+
+loadPages();
 
 function genPage(res, parent, id, slug) {
     var page;
