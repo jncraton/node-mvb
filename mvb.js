@@ -33,7 +33,6 @@ function buildPageContent(page) {
     page.content = page.content.replace(/{{ canonicalUrl }}/g, conf.baseUrl + page.canonicalUrl);
     
     if (!page.id) {
-        console.log(page)
         var children = [];
 
         Object.keys(page).forEach(function (id) {
