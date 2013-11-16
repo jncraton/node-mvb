@@ -25,6 +25,8 @@ function buildPageContent(page) {
     } catch (e) {
         page.title = conf.title;
     }
+    
+    page.content = md(page.content);
 
     return page;
 }
@@ -91,7 +93,7 @@ function genPage(res, parent, id, slug) {
         status = 404;
     }
 
-    var html = template.replace('{{ content }}', md(page.content));
+    var html = template.replace('{{ content }}', page.content);
     
     html = html.replace('{{ title }}', page.title || conf.title);
     html = html.replace(/{{ canonicalUrl }}/g, conf.baseUrl + page.canonicalUrl);
