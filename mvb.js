@@ -20,6 +20,12 @@ var pages = {};
 function buildPageContent(page) {
     page.content = fs.readFileSync(page.localPath + '/content.md', 'utf-8')
     
+    try {
+        page.title = page.content.match(/# (.*?)\n/)[1];
+    } catch (e) {
+        page.title = conf.title;
+    }
+
     return page;
 }
 
@@ -51,8 +57,6 @@ function loadPages() {
                         canonicalUrl: '/' + parent + '/' + id,
                         slug: parts[2]
                     });
-
-                    pages[parent][id].title = pages[parent][id].content.match(/# (.*?)\n/)[1];
                 }
             });
         }
