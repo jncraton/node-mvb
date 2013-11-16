@@ -17,42 +17,42 @@ template = template.replace('{{ style }}', style)
 
 var pages = {};
 
-function getPageDir(parent, id) {
-    if (id) {
-        return root + parent + '/' + id + '-' + pages[parent][id].slug;
-    } else {
-        return root + parent;
-    }
+function buildPageContent(page) {
+    page.content = fs.readFileSync(page.localPath + '/content.md', 'utf-8')
+    
+    return page;
 }
 
 function loadPages() {
     fs.readdirSync(root).forEach(function (parent) {
         if (parent == 'content.md') {
-            pages['root'] = {
+            pages['root'] = buildPageContent({
+                localPath: root,
                 slug: '',
-                canonicalUrl: '/',
-                content: fs.readFileSync(root + parent, 'utf-8')
-            }
+                canonicalUrl: '/'
+            });
         } else if (parent.indexOf('.') == -1) {
-            pages[parent] = {
+            pages[parent] = buildPageContent({
+                localPath: root + parent,
                 slug: parent,
-                canonicalUrl: '/' + parent,
-                content: fs.readFileSync(root + parent + '/content.md', 'utf-8')
-            };
+                canonicalUrl: '/' + parent
+            });
 
-            fs.readdirSync(root + parent).forEach(function (child) {
+            fs.readdirSync(pages[parent].localPath).forEach(function (child) {
                 var parts = child.match(/(\d+)\-(.*)/);
 
                 if (parts) {
                     var id = parts[1];
+                    var slug = parts[2];
 
-                    pages[parent][id] = {
+                    pages[parent][id] = buildPageContent({
                         id: id,
+                        localPath: root + parent + '/' + id + '-' + slug,
                         canonicalUrl: '/' + parent + '/' + id,
                         slug: parts[2]
-                    };
+                    });
 
-                    pages[parent][id].content = fs.readFileSync(getPageDir(parent, id) + '/content.md', 'utf-8');
+                    pages[parent][id].content = fs.readFileSync(pages[parent][id].localPath + '/content.md', 'utf-8');
 
                     pages[parent][id].title = pages[parent][id].content.match(/# (.*?)\n/)[1];
                 }
