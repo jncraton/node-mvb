@@ -48,7 +48,7 @@ function buildPageContent(page) {
         var childrenHtml = '';
         
         for (var i = 0; i < children.length; i++) {
-            childrenHtml += '<a href="' + children[i].canonicalUrl + '">' + 
+            childrenHtml += '<a href="' + children[i].canonicalUrl + '/">' + 
                 children[i].title + '</a><br />'
         }
 
