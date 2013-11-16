@@ -172,9 +172,11 @@ app.get('/:parent/:id/:slug/', function(req, res){
     genPage(res, req.params.parent, req.params.id, req.params.slug);
 });
 
-app.get('/:parent/:id/:slug/:file', function(req, res){
-    res.sendfile(root + req.params.parent + '/' + req.params.id + '-' + pages[req.params.parent][req.params.id].slug + '/' + req.params.file);
-});
+if (conf.serveStatic == 'true') {
+    app.get('/:parent/:id/:slug/:file', function(req, res){
+        res.sendfile(root + req.params.parent + '/' + req.params.id + '-' + pages[req.params.parent][req.params.id].slug + '/' + req.params.file);
+    });    
+}
 
 app.get('/:parent/:id/:slug', function(req, res){
     res.redirect(301, '/' + req.params.parent + '/' + req.params.id + '/' + pages[req.params.parent][req.params.id].slug + '/');
