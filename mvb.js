@@ -13,9 +13,21 @@ var root = 'pages/';
 var template = fs.readFileSync('template.html', 'utf-8');
 var style = fs.readFileSync('style.css', 'utf-8');
 
-template = template.replace('{{ style }}', style)
+template = template.replace('{{ style }}', minifyCSS(style));
 
 var pages = {};
+    
+function minifyCSS (css) {
+    css = css.replace(/\n +/g, '\n')
+    css = css.replace(/\n\n+/g, '\n')
+    css = css.replace(/;\n+/g, ';')
+    css = css.replace(/, +/g, ',')
+    css = css.replace(/{\n+/g, '{')
+    css = css.replace(/,\n+/g, ',')
+    css = css.replace(/}\n+/g, '}')
+    
+    return css;
+}
 
 function buildPageContent(page) {
     page.content = fs.readFileSync(page.localPath + '/content.md', 'utf-8')
