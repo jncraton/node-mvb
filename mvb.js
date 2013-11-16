@@ -47,7 +47,13 @@ function buildPageContent(page) {
         page.title = conf.title;
     }
     
-    page.content = template.replace('{{ content }}', md(page.content));
+    script = '';
+    
+    if (fs.existsSync(page.localPath + '/script.js')) {
+        script = '\n' + fs.readFileSync(page.localPath + '/script.js', 'utf-8') + '\n';
+    }
+    
+    page.content = template.replace('{{ content }}', script + md(page.content));
     
     page.content = page.content.replace('{{ title }}', page.title);
 
