@@ -22,7 +22,8 @@ function minifyCSS (css) {
     css = css.replace(/\n\n+/g, '\n')
     css = css.replace(/;\n+/g, ';')
     css = css.replace(/, +/g, ',')
-    css = css.replace(/{\n+/g, '{')
+    css = css.replace(/: +/g, ':')
+    css = css.replace(/[\n ]*{[\n ]*/g, '{')
     css = css.replace(/,\n+/g, ',')
     css = css.replace(/}\n+/g, '}')
     
