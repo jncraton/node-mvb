@@ -34,7 +34,7 @@ function minifyCSS (css) {
 }
 
 function minifyHTML (html) {
-    html = html.replace(/\n +/g, '\n')
+    html = html.replace(/\n[\t ]+/g, '\n')
     html = html.replace(/\n\n+/g, '\n')
     html = html.replace(/>\n+/g, '>')
     
