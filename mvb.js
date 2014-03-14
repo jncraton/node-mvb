@@ -3,7 +3,7 @@
 var fs = require('fs');
 
 var express = require('express');
-var md = require('node-markdown').Markdown;
+var marked = require('marked');
 
 var conf = require('./conf.json');
 
@@ -57,7 +57,7 @@ function buildPageContent(page) {
         script = '\n' + fs.readFileSync(page.localPath + '/script.js', 'utf-8') + '\n';
     }
     
-    page.content = template.replace('{{ content }}', script + md(page.content));
+    page.content = template.replace('{{ content }}', script + marked(page.content));
     
     page.content = page.content.replace('{{ title }}', page.title);
 
