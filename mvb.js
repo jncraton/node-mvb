@@ -34,8 +34,10 @@ function minifyCSS (css) {
 }
 
 function minifyHTML (html) {
-    html = html.replace(/\n[\t ]+/g, '\n')
-    html = html.replace(/>\n+/g, '>')
+    if (html.indexOf('<pre') == -1) {
+        html = html.replace(/\n[\t ]+/g, '\n')
+        html = html.replace(/>\n+/g, '>')
+    }
     
     return html;
 }
