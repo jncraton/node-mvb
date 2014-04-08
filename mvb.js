@@ -201,7 +201,11 @@ if (conf.serveStatic == 'true') {
 }
 
 app.get('/:parent/:id/:slug', function(req, res){
-    res.redirect(301, '/' + req.params.parent + '/' + req.params.id + '/' + pages[req.params.parent][req.params.id].slug + '/');
+    if (! (pages[req.params.parent] && pages[req.params.parent][req.params.id])) {
+        res.send(404, 'Not Found');
+    } else {
+        res.redirect(301, '/' + req.params.parent + '/' + req.params.id + '/' + pages[req.params.parent][req.params.id].slug + '/');
+    }
 });
 
 app.listen(conf.port);
