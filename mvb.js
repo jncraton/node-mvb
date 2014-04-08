@@ -175,7 +175,19 @@ app.get('/:parent', function(req, res){
 });
 
 app.get('/:parent/:id', function(req, res){
-    res.redirect(301, '/' + req.params.parent + '/' + req.params.id + '/' + pages[req.params.parent][req.params.id].slug + '/');
+    if (!isNaN(req.params.id)) {
+        res.redirect(301, '/' + req.params.parent + '/' + req.params.id + '/' + pages[req.params.parent][req.params.id].slug + '/');
+    } else {
+        // Assume that the form is /:parent/:slug and redirect
+        
+        Object.keys(pages[req.params.parent]).forEach(function (id) {
+            if (!isNaN(id)) {
+                var slug = pages[req.params.parent][id].slug
+                
+                res.redirect(301, '/' + req.params.parent + '/' + id + '/' + slug + '/');
+            }
+        });
+    }
 });
 
 app.get('/:parent/:id/:slug/', function(req, res){
