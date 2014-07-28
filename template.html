@@ -13,6 +13,9 @@
     <div>
         {{ content }}
         {{ children }}
+        {% if parent %}
+            <p>View other pages under {{ parentLink }}.</p>
+        {% endif %}
         {% if nochildren %}
             This page has no children
         {% endif %}

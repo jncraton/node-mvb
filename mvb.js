@@ -72,6 +72,9 @@ function buildPageContent(page) {
     
     page.content = page.content.replace('{{ title }}', page.title);
 
+    page.content = page.content.replace('{{ parentUrl }}', '/' + page.parent);
+    page.content = page.content.replace('{{ parentLink }}', '<a href="/' + page.parent + '">' + page.parent + '</a>');
+
     page.content = page.content.replace(/{{ canonicalUrl }}/g, conf.baseUrl + page.canonicalUrl);
     
     if (!page.id) {
@@ -103,6 +106,11 @@ function buildPageContent(page) {
     if (children) {
         page.content = page.content.replace(/{% if nochildren %}[\s\S]*?{% endif %}/mg, '');
     }
+    
+    if (!page.parent) {
+        page.content = page.content.replace(/{% if parent %}[\s\S]*?{% endif %}/mg, '');
+    }
+    
     page.content = page.content.replace(/{% .*? %}/mg, '');
     
     page.content = minifyHTML(page.content);
@@ -116,13 +124,15 @@ function loadPages() {
             pages['root'] = buildPageContent({
                 localPath: root,
                 slug: '',
-                canonicalUrl: '/'
+                canonicalUrl: '/',
+                parent: ''
             });
         } else if (parent.indexOf('.') == -1) {
             pages[parent] = buildPageContent({
                 localPath: root + parent,
                 slug: parent,
-                canonicalUrl: '/' + parent
+                canonicalUrl: '/' + parent,
+                parent: ''
             });
 
             fs.readdirSync(pages[parent].localPath).forEach(function (child) {
@@ -136,7 +146,8 @@ function loadPages() {
                         id: id,
                         localPath: root + parent + '/' + id + '-' + slug,
                         canonicalUrl: '/' + parent + '/' + id,
-                        slug: parts[2]
+                        slug: parts[2],
+                        parent: parent
                     });
                 }
             });
