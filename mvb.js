@@ -42,6 +42,17 @@ function minifyHTML (html) {
     return html;
 }
 
+function getFirstImage(page) {
+    var img = page.content.match('<img src="(.*?)"')
+    
+    if (img) {
+        var full_path = page.canonicalUrl + '/' + page.slug + '/'
+        return '<img src="' + full_path + img[1] + '" /><br/>'
+    } else {
+        return ""
+    }
+}
+
 function buildPageContent(page) {
     page.content = fs.readFileSync(page.localPath + '/content.md', 'utf-8')
     
@@ -80,7 +91,7 @@ function buildPageContent(page) {
         
         for (var i = 0; i < children.length; i++) {
             childrenHtml += '<a href="' + children[i].canonicalUrl + '/">' + 
-                children[i].title + '</a><br />'
+                children[i].title + '</a><br />' + getFirstImage(children[i])
         }
 
 
