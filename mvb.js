@@ -47,7 +47,7 @@ function getFirstImage(page) {
     
     if (img) {
         var full_path = page.canonicalUrl + '/' + page.slug + '/'
-        return '<img src="' + full_path + img[1] + '" /><br/>'
+        return '<br/><img src="' + full_path + img[1] + '" />'
     } else {
         return ""
     }
@@ -94,7 +94,7 @@ function buildPageContent(page) {
         
         for (var i = 0; i < children.length; i++) {
             childrenHtml += '<a href="' + children[i].canonicalUrl + '/">' + 
-                children[i].title + '</a><br />' + getFirstImage(children[i])
+                children[i].title + getFirstImage(children[i]) + '</a><br />'
         }
 
 
