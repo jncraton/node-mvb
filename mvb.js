@@ -78,7 +78,7 @@ function buildPageContent(page) {
         script = '\n' + fs.readFileSync(page.localPath + '/script.js', 'utf-8') + '\n';
     }
     
-    page.content = template.replace('{{ content }}', script + marked(page.content));
+    page.content = template.replace('{{ content }}', marked(page.content) + script);
     
     page.content = page.content.replace('{{ title }}', page.title);
 
