@@ -55,11 +55,21 @@ function getFirstImage(page) {
 
 function buildPageContent(page) {
     page.content = fs.readFileSync(page.localPath + '/content.md', 'utf-8')
+    page.text = marked(page.content).replace(/\<.*?\>/g, '');
     
     try {
         page.title = page.content.match(/# (.*?)\n/)[1];
+        page.text = page.text.replace(page.title, '');
     } catch (e) {
         page.title = conf.title;
+    }
+    
+    var words = page.text.split(' ');
+    
+    if (words.length > 50) {
+        page.shortText = words.splice(0, 50).join(' ') + '...';
+    } else {
+        page.shortText = '';
     }
     
     script = '';
@@ -93,8 +103,10 @@ function buildPageContent(page) {
         var childrenHtml = '';
         
         for (var i = 0; i < children.length; i++) {
-            childrenHtml += '<a href="' + children[i].canonicalUrl + '/">' + 
-                children[i].title + getFirstImage(children[i]) + '</a><br />'
+            childrenHtml += '<h2><a href="' + children[i].canonicalUrl + '/">' + 
+                children[i].title + '</h2>' +
+                '<a href="' + children[i].canonicalUrl + '/">' + getFirstImage(children[i]) + '</a><br />' +
+                children[i].shortText
         }
 
 
