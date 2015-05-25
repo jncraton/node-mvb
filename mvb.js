@@ -170,6 +170,7 @@ function loadPages() {
 }
 
 loadPages();
+setInterval(loadPages, 300 * 1000);
 
 function genPage(res, parent, id, slug) {
     var page;
