@@ -9,6 +9,8 @@ var conf = require('./conf.json');
 
 var app = express();
 
+app.disable('x-powered-by');
+
 var root = 'pages/';
 var template = fs.readFileSync('template.html', 'utf-8');
 var style = fs.readFileSync('style.css', 'utf-8');
@@ -54,6 +56,11 @@ function getFirstImage(page) {
 }
 
 function buildPageContent(page) {
+    if (fs.existsSync(page.localPath + '/content.html')) {
+        page.content = fs.readFileSync(page.localPath + '/content.html', 'utf-8')
+        return page
+    }
+    
     page.content = fs.readFileSync(page.localPath + '/content.md', 'utf-8')
     page.text = marked(page.content).replace(/\<.*?\>/g, '');
     
@@ -232,7 +239,7 @@ app.get('/:parent/:id/:slug/', function(req, res){
 if (conf.serveStatic == 'true') {
     app.get('/:parent/:id/:slug/:file', function(req, res){
         res.sendfile(root + req.params.parent + '/' + req.params.id + '-' + pages[req.params.parent][req.params.id].slug + '/' + req.params.file);
-    });    
+    });
 }
 
 app.get('/:parent/:id/:slug', function(req, res){
