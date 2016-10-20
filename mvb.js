@@ -58,17 +58,22 @@ function getFirstImage(page) {
 function buildPageContent(page) {
     if (fs.existsSync(page.localPath + '/content.html')) {
         page.content = fs.readFileSync(page.localPath + '/content.html', 'utf-8')
-        return page
-    }
-    
-    page.content = fs.readFileSync(page.localPath + '/content.md', 'utf-8')
-    page.text = marked(page.content).replace(/\<.*?\>/g, '');
-    
-    try {
-        page.title = page.content.match(/# (.*?)\n/)[1];
-        page.text = page.text.replace(page.title, '');
-    } catch (e) {
-        page.title = conf.title;
+        page.text = page.content
+        try {
+            page.title = page.content.match(/<h1>(.*?)<\/h1>/)[1];
+        } catch (e) {
+            page.title = conf.title;
+        }
+    } else {
+        page.content = fs.readFileSync(page.localPath + '/content.md', 'utf-8')
+        page.text = marked(page.content).replace(/\<.*?\>/g, '');
+        try {
+            page.title = page.content.match(/# (.*?)\n/)[1];
+            page.text = page.text.replace(page.title, '');
+        } catch (e) {
+            page.title = conf.title;
+        }
+        page.content = marked(page.content)
     }
     
     var words = page.text.split(' ');
@@ -85,7 +90,7 @@ function buildPageContent(page) {
         script = '\n' + fs.readFileSync(page.localPath + '/script.js', 'utf-8') + '\n';
     }
     
-    page.content = template.replace('{{ content }}', marked(page.content) + script);
+    page.content = template.replace('{{ content }}', page.content + script);
     
     page.content = page.content.replace('{{ title }}', page.title);
 
