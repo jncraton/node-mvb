@@ -1,5 +1,7 @@
 mvb - Minimum viable blogging engine on node.js
-========
+===============================================
+
+[![Build Status](https://travis-ci.org/jncraton/node-mvb.svg?branch=master)](https://travis-ci.org/jncraton/node-mvb)
 
 This application provides a simple way to host a markdown powered blog on node.js. All pages and resources are stored in a simple tree structure matching the following pattern:
 
