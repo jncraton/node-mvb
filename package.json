@@ -5,6 +5,6 @@
   "private": true,
   "dependencies": {
     "express": "4.16.*",
-    "marked": "0.3.*"
+    "marked": "0.3.9"
   }
 }
