@@ -210,7 +210,7 @@ function genPage(res, parent, id, slug) {
         status = 404;
     }
 
-    res.send(status, page.content);
+    res.status(status).send(page.content);
 }
 
 app.get('/', function(req, res){
@@ -218,15 +218,28 @@ app.get('/', function(req, res){
 });
 
 app.get('/:parent', function(req, res){
+	if (req.url.indexOf('.') < 0 && !req.url.endsWith('/')) {
+		res.redirect(301, '/' + req.params.parent + '/')
+	}
     genPage(res, req.params.parent);
 });
 
 app.get('/:parent/:id', function(req, res){
     if (!isNaN(req.params.id)) {
-        res.redirect(301, '/' + req.params.parent + '/' + req.params.id + '/' + pages[req.params.parent][req.params.id].slug + '/');
+    	try {
+	        res.redirect(301, '/' + req.params.parent + '/' + req.params.id + '/' + pages[req.params.parent][req.params.id].slug + '/');   		    		
+    	} catch (e) {
+    		res.status('404').send("Not Found")
+    	}
     } else {
+		// Check if file exists and return it
+		var filename = 'pages/' + req.params.parent + '/' + req.params.id
+		
+		if (fs.existsSync(filename)) {
+			res.sendfile(filename)
+		}
+    
         // Assume that the form is /:parent/:slug and redirect
-
         Object.keys(pages[req.params.parent]).forEach(function (id) {
             var slug = pages[req.params.parent][id].slug
             
@@ -238,12 +251,31 @@ app.get('/:parent/:id', function(req, res){
 });
 
 app.get('/:parent/:id/:slug/', function(req, res){
-    genPage(res, req.params.parent, req.params.id, req.params.slug);
+	try {
+	    genPage(res, req.params.parent, req.params.id, req.params.slug);
+	} catch (e) {
+		res.send(404, "Not Found")		
+	}
 });
 
 if (conf.serveStatic == 'true') {
     app.get('/:parent/:id/:slug/:file', function(req, res){
-        res.sendfile(root + req.params.parent + '/' + req.params.id + '-' + pages[req.params.parent][req.params.id].slug + '/' + req.params.file);
+		var filename = root + req.params.parent + '/' + req.params.id + '-' + pages[req.params.parent][req.params.id].slug + '/' + req.params.file
+
+		if (fs.existsSync(filename)) {
+			res.sendfile(filename)
+		} else {
+			res.send(404, "Not Found")		        	
+        }
+    });
+    app.get('/:parent/:file.png', function(req, res){
+    	var filename = root + req.params.parent + '/' + req.params.id + '-' + pages[req.params.parent][req.params.id].slug + '/' + req.params.file
+
+		if (fs.existsSync(filename)) {
+			res.sendfile(filename)
+		} else {
+			res.send(404, "Not Found")		        	
+        }
     });
 }
 
